@@ -1,9 +1,5 @@
 # My Cooking Codex - API
 
-## Requirements
-- Database (SQLite, MySQL, PostgreSQL)
-- libvips installed
-
 ## Environment Variables
 
 | Name         | Description                                         | Default   |
@@ -29,3 +25,18 @@ user:pass@tcp(127.0.0.1:3306)/my_cooking_codex?charset=utf8mb4&parseTime=True&lo
 # postgres
 host=localhost user=user password=password dbname=my_cooking_codex port=9920 sslmode=disable TimeZone=Europe/London
 ```
+
+## Without Docker
+### Requirements
+- Database (SQLite, MySQL, PostgreSQL)
+- libvips installed
+- go >= 1.20
+
+### Build
+Run these commands:
+
+```
+go build
+```
+
+Copy built binary `./api` and run.
