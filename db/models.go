@@ -1,11 +1,12 @@
 package db
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
-	"time"
 )
 
 type UUIDBase struct {
@@ -46,7 +47,11 @@ func (u *User) IsPasswordMatch(plainPassword string) bool {
 }
 
 type RecipeInfo struct {
-	Yields *datatypes.JSONType[RecipeInfoYields] `gorm:"type:json" json:"yields,omitempty"`
+	Yields        *datatypes.JSONType[RecipeInfoYields] `gorm:"type:json" json:"yields,omitempty"`
+	CookSeconds   uint                                  `gorm:"not null;default:0" json:"cookSeconds,omitempty"`
+	PrepSeconds   uint                                  `gorm:"not null;default:0" json:"prepSeconds,omitempty"`
+	Freezable     bool                                  `gorm:"not null;default:false" json:"freezable"`
+	MicrowaveOnly bool                                  `gorm:"not null;default:false" json:"microwaveOnly"`
 }
 
 type Recipe struct {
@@ -54,10 +59,11 @@ type Recipe struct {
 	TimeBase
 	OwnerID          uuid.UUID                               `gorm:"not null;type:uuid" json:"ownerId"`
 	Title            string                                  `gorm:"not null;type:varchar(30)" json:"title"`
-    Info             RecipeInfo                              `gorm:"embedded;embeddedPrefix:info_" json:"info"`
+	Info             RecipeInfo                              `gorm:"embedded;embeddedPrefix:info_" json:"info"`
 	ShortDescription *string                                 `gorm:"type:varchar(256)" json:"shortDescription,omitempty"`
 	LongDescription  *string                                 `json:"longDescription,omitempty"`
 	Ingredients      *datatypes.JSONType[[]RecipeIngredient] `gorm:"type:json" json:"ingredients,omitempty"`
 	Steps            *datatypes.JSONType[[]RecipeStep]       `gorm:"type:json" json:"steps,omitempty"`
 	ImageID          *uuid.UUID                              `gorm:"type:uuid" json:"imageId"`
+	Source           *string                                 `json:"source,omitempty"`
 }
