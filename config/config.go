@@ -10,6 +10,6 @@ type AppConfig struct {
 	Port       uint          `env:"PORT" envDefault:"8000"`
 	DataPath   string        `env:"DATA_PATH,notEmpty"`
 	DB         DBConfig      `envPrefix:"DB__"`
-	SecretKey  Base64Decoded `env:"SECRET_KEY,notEmpty"`
+	JWTSecret  Base64Decoded `env:"JWT_SECRET,notEmpty"`
 	StaticPath *string       `env:"STATIC_PATH"`
 }

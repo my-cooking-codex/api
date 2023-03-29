@@ -42,7 +42,7 @@ func InitRoutes(e *echo.Echo, appConfig config.AppConfig) {
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {
 			return new(core.JWTClaims)
 		},
-		SigningKey: []byte(appConfig.SecretKey),
+		SigningKey: []byte(appConfig.JWTSecret),
 		ContextKey: UserTokenKey,
 	}
 	jwtMiddleware := echojwt.WithConfig(config)

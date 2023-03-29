@@ -38,7 +38,7 @@ func postLogin(ctx echo.Context) error {
 	// user is valid, create a token
 	if token, err := core.CreateAuthenticationToken(
 		authenticationData,
-		[]byte(appConfig.SecretKey),
+		[]byte(appConfig.JWTSecret),
 	); err != nil {
 		return err
 	} else {
