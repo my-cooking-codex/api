@@ -64,7 +64,11 @@ func main() {
 	e.HTTPErrorHandler = errorHandler
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
-	e.Use(middleware.CORS())
+	corsConfig := middleware.DefaultCORSConfig
+	{
+		corsConfig.AllowOrigins = appConfig.CORSOrigins
+	}
+	e.Use(middleware.CORSWithConfig(corsConfig))
 	e.Validator = &Validator{validator: validator.New()}
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(ctx echo.Context) error {

@@ -6,15 +6,16 @@
 
 ## Environment Variables
 
-| Name        | Description                                         | Default   |
-| :---------- | :-------------------------------------------------- | :-------- |
-| HOST        | Host to listen on                                   | 127.0.0.1 |
-| PORT        | Port to bind to                                     | 8000      |
-| DATA_PATH   | Where app data will be stored                       |           |
-| DB__URI     | Database URI                                        |           |
-| DB__TYPE    | The type of database (sqlite, mysql, postgres)      |           |
-| JWT_SECRET  | base64 encoded secret for JWT authentication tokens |           |
-| STATIC_PATH | Serve static files at / (e.g. the frontend)         | -         |
+| Name         | Description                                         | Default   |
+| :----------- | :-------------------------------------------------- | :-------- |
+| HOST         | Host to listen on                                   | 127.0.0.1 |
+| PORT         | Port to bind to                                     | 8000      |
+| DATA_PATH    | Where app data will be stored                       |           |
+| DB__URI      | Database URI                                        |           |
+| DB__TYPE     | The type of database (sqlite, mysql, postgres)      |           |
+| JWT_SECRET   | base64 encoded secret for JWT authentication tokens |           |
+| CORS_ORIGINS | List of origins that may access the API             | *         |
+| STATIC_PATH  | Serve static files at / (e.g. the frontend)         | -         |
 
 ### DB__URI
 
