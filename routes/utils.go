@@ -34,6 +34,7 @@ func getAuthenticatedUser(ctx echo.Context) core.AuthenticatedUser {
 }
 
 func InitRoutes(e *echo.Echo, appConfig config.AppConfig) {
+	e.GET("/api/info/", getServerInfo)
 	e.POST("/api/users/", postCreateUser)
 	e.POST("/api/login/", postLogin)
 
