@@ -143,7 +143,7 @@ func postSetRecipeImage(ctx echo.Context) error {
 	var b = bytes.Buffer{}
 	io.Copy(&b, ctx.Request().Body)
 	b.Read(content)
-	if optimisedContent, err := core.OptimiseImageToJPEG(content, 2000); err == nil {
+	if optimisedContent, err := core.OptimiseImageToJPEG(content, int(appConfig.OptimizedImageSize)); err == nil {
 		content = optimisedContent
 	} else {
 		return err
