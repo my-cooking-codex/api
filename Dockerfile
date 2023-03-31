@@ -21,11 +21,11 @@ FROM alpine:${ALPINE_VERSION}
 
     COPY --from=builder --link /usr/local/bin/app /usr/local/bin/app
 
-    ENV HOST=0.0.0.0
-    ENV PORT=8000
-    ENV DATA_PATH=/data
+    ENV BIND__HOST=0.0.0.0
+    ENV BIND__PORT=8000
     ENV DB__URI=/data/db.sqlite
     ENV DB__TYPE=sqlite
+    ENV DATA_PATH=/data
 
     VOLUME "/data"
     EXPOSE 8000

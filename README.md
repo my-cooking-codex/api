@@ -4,11 +4,11 @@
 
 | Name                 | Description                                         | Default   |
 | :------------------- | :-------------------------------------------------- | :-------- |
-| HOST                 | Host to listen on                                   | 127.0.0.1 |
-| PORT                 | Port to bind to                                     | 8000      |
-| DATA_PATH            | Where app data will be stored                       |           |
+| BIND__HOST           | Host to listen on                                   | 127.0.0.1 |
+| BIND__PORT           | Port to bind to                                     | 8000      |
 | DB__URI              | Database URI                                        |           |
 | DB__TYPE             | The type of database (sqlite, mysql, postgres)      |           |
+| DATA_PATH            | Where app data will be stored                       |           |
 | JWT_SECRET           | base64 encoded secret for JWT authentication tokens |           |
 | STATIC_PATH          | Serve static files at / (e.g. the frontend)         | -         |
 | CORS_ORIGINS         | List of origins that may access the API             | *         |

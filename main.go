@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -89,5 +88,5 @@ func main() {
 		})
 	}
 	// Start server
-	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%d", appConfig.Host, appConfig.Port)))
+	e.Logger.Fatal(e.Start(appConfig.Bind.AsAddress()))
 }
