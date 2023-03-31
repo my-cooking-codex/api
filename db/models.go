@@ -52,6 +52,7 @@ type RecipeInfo struct {
 	PrepTime      uint                                  `gorm:"not null;default:0" json:"prepTime,omitempty"`
 	Freezable     bool                                  `gorm:"not null;default:false" json:"freezable"`
 	MicrowaveOnly bool                                  `gorm:"not null;default:false" json:"microwaveOnly"`
+	Source        *string                               `json:"source,omitempty"`
 }
 
 type Recipe struct {
@@ -65,5 +66,4 @@ type Recipe struct {
 	Ingredients      *datatypes.JSONType[[]RecipeIngredient] `gorm:"type:json" json:"ingredients,omitempty"`
 	Steps            *datatypes.JSONType[[]RecipeStep]       `gorm:"type:json" json:"steps,omitempty"`
 	ImageID          *uuid.UUID                              `gorm:"type:uuid" json:"imageId"`
-	Source           *string                                 `json:"source,omitempty"`
 }
