@@ -9,12 +9,14 @@ import (
 
 type serverInfo struct {
 	APIVersionMajor     uint `json:"apiVersionMajor"`
+	APIVersionMinor     uint `json:"apiVersionMinor"`
 	RegistrationAllowed bool `json:"registrationAllowed"`
 }
 
 func getServerInfo(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, serverInfo{
 		APIVersionMajor:     core.APIVersionMajor,
+		APIVersionMinor:     core.APIVersionMinor,
 		RegistrationAllowed: true,
 	})
 }
