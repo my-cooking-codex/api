@@ -2,18 +2,18 @@
 
 ## Environment Variables
 
-| Name                 | Description                                         | Default   |
-| :------------------- | :-------------------------------------------------- | :-------- |
-| BIND__HOST           | Host to listen on                                   | 127.0.0.1 |
-| BIND__PORT           | Port to bind to                                     | 8000      |
-| DB__URI              | Database URI                                        |           |
-| DB__TYPE             | The type of database (sqlite, mysql, postgres)      |           |
-| DATA_PATH            | Where app data will be stored                       |           |
-| JWT_SECRET           | base64 encoded secret for JWT authentication tokens |           |
-| STATIC_PATH          | Serve static files at / (e.g. the frontend)         | -         |
-| CORS_ORIGINS         | List of origins that may access the API             | *         |
-| OPTIMIZED_IMAGE_SIZE | Max image size to shrink uploaded image to          | 2000      |
-| MAX_UPLOAD_SIZE      | The max possible upload size                        | 4M        |
+| Name                     | Description                                         | Default   |
+| :----------------------- | :-------------------------------------------------- | :-------- |
+| BIND__HOST               | Host to listen on                                   | 127.0.0.1 |
+| BIND__PORT               | Port to bind to                                     | 8000      |
+| DB__URI                  | Database URI                                        |           |
+| DB__TYPE                 | The type of database (sqlite, mysql, postgres)      |           |
+| DATA__RECIPE_IMAGES_BASE | Where recipe images will be stored                  |           |
+| JWT_SECRET               | base64 encoded secret for JWT authentication tokens |           |
+| STATIC_PATH              | Serve static files at / (e.g. the frontend)         | -         |
+| CORS_ORIGINS             | List of origins that may access the API             | *         |
+| OPTIMIZED_IMAGE_SIZE     | Max image size to shrink uploaded image to          | 2000      |
+| MAX_UPLOAD_SIZE          | The max possible upload size                        | 4M        |
 
 ### DB__URI
 

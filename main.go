@@ -5,13 +5,11 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/my-cooking-codex/api/config"
-	"github.com/my-cooking-codex/api/core"
 	"github.com/my-cooking-codex/api/db"
 	"github.com/my-cooking-codex/api/routes"
 	"gorm.io/gorm"
@@ -49,11 +47,9 @@ func main() {
 	if err := appConfig.ParseConfig(); err != nil {
 		log.Fatalln(err)
 	}
-	// Create data directory if it doesn't exist
-	if err := os.MkdirAll(appConfig.DataPath, os.ModePerm); err != nil {
+	if err := os.MkdirAll(appConfig.Data.RecipeOriginalsPath(), os.ModePerm); err != nil {
 		log.Fatalln(err)
 	}
-	os.MkdirAll(path.Join(appConfig.DataPath, core.RecipeImagesOriginalPath), os.ModePerm)
 	// Connect to database
 	if err := db.InitDB(appConfig.DB); err != nil {
 		log.Fatalln(err)

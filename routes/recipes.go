@@ -115,7 +115,10 @@ func deleteRecipe(ctx echo.Context) error {
 		return err
 	}
 
-	os.Remove(path.Join(appConfig.DataPath, core.RecipeImagesOriginalPath, recipe.ImageID.String()+".jpg"))
+	os.Remove(path.Join(
+		appConfig.Data.RecipeOriginalsPath(),
+		recipe.ImageID.String()+".jpg",
+	))
 
 	return ctx.NoContent(http.StatusNoContent)
 }
@@ -150,7 +153,10 @@ func postSetRecipeImage(ctx echo.Context) error {
 	}
 
 	imageID := uuid.New()
-	imagePath := path.Join(appConfig.DataPath, core.RecipeImagesOriginalPath, imageID.String()+".jpg")
+	imagePath := path.Join(
+		appConfig.Data.RecipeOriginalsPath(),
+		imageID.String()+".jpg",
+	)
 	if err := os.WriteFile(imagePath, content, 0644); err != nil {
 		return err
 	}
@@ -161,7 +167,10 @@ func postSetRecipeImage(ctx echo.Context) error {
 
 	// Remove old image if one was set
 	if recipe.ImageID != nil {
-		os.Remove(path.Join(appConfig.DataPath, core.RecipeImagesOriginalPath, recipe.ImageID.String()+".jpg"))
+		os.Remove(path.Join(
+			appConfig.Data.RecipeOriginalsPath(),
+			recipe.ImageID.String()+".jpg",
+		))
 	}
 
 	return ctx.JSON(http.StatusCreated, imageID.String())
@@ -185,7 +194,10 @@ func deleteRecipeImage(ctx echo.Context) error {
 		return err
 	}
 
-	os.Remove(path.Join(appConfig.DataPath, core.RecipeImagesOriginalPath, recipe.ImageID.String()+".jpg"))
+	os.Remove(path.Join(
+		appConfig.Data.RecipeOriginalsPath(),
+		recipe.ImageID.String()+".jpg",
+	))
 
 	if err := crud.UpdateRecipeImage(uuid.MustParse(recipeID), nil); err != nil {
 		return err

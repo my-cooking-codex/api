@@ -25,7 +25,7 @@ FROM alpine:${ALPINE_VERSION}
     ENV BIND__PORT=8000
     ENV DB__URI=/data/db.sqlite
     ENV DB__TYPE=sqlite
-    ENV DATA_PATH=/data
+    ENV DATA__RECIPE_IMAGES_BASE=/data/recipe_images
 
     VOLUME "/data"
     EXPOSE 8000

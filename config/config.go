@@ -1,6 +1,9 @@
 package config
 
-import "fmt"
+import (
+	"fmt"
+	"path"
+)
 
 type BindConfig struct {
 	Host string `env:"HOST" envDefault:"127.0.0.1"`
@@ -16,10 +19,18 @@ type DBConfig struct {
 	Type string `env:"TYPE,notEmpty"`
 }
 
+type DataConfig struct {
+	RecipeImagesBase string `env:"RECIPE_IMAGES_BASE,notEmpty"`
+}
+
+func (c *DataConfig) RecipeOriginalsPath() string {
+	return path.Join(c.RecipeImagesBase, "original")
+}
+
 type AppConfig struct {
 	Bind                 BindConfig    `envPrefix:"BIND__"`
 	DB                   DBConfig      `envPrefix:"DB__"`
-	DataPath             string        `env:"DATA_PATH,notEmpty"`
+	Data                 DataConfig    `envPrefix:"DATA__"`
 	JWTSecret            Base64Decoded `env:"JWT_SECRET,notEmpty"`
 	StaticPath           *string       `env:"STATIC_PATH"`
 	CORSOrigins          []string      `env:"CORS_ORIGINS" envSeparator:"," envDefault:"*"`
