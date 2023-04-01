@@ -70,7 +70,8 @@ func GetRecipeById(id uuid.UUID) (db.Recipe, error) {
 
 func DoesUserOwnRecipe(userID uuid.UUID, recipeId uuid.UUID) (bool, error) {
 	var recipe db.Recipe
-	if err := db.DB.First(&recipe, "id = ?", recipeId, "owner_id = ?", userID).Error; err != nil {
+
+	if err := db.DB.Where("id = ?", recipeId).Where("owner_id = ?", userID).First(&recipe).Error; err != nil {
 		return false, err
 	}
 	return true, nil
