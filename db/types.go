@@ -23,7 +23,7 @@ type RecipeInfoYields struct {
 }
 
 type CreateUser struct {
-	Username string `json:"username" validate:"required"`
+	Username string `json:"username" validate:"required,alphanum"`
 	Password string `json:"password" validate:"required"`
 }
 
