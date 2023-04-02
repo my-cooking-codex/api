@@ -59,7 +59,7 @@ type Recipe struct {
 	UUIDBase
 	TimeBase
 	OwnerID          uuid.UUID                               `gorm:"not null;type:uuid" json:"ownerId"`
-	Title            string                                  `gorm:"not null;type:varchar(30)" json:"title"`
+	Title            string                                  `gorm:"not null;type:varchar(60)" json:"title"`
 	Info             RecipeInfo                              `gorm:"embedded;embeddedPrefix:info_" json:"info"`
 	ShortDescription *string                                 `gorm:"type:varchar(256)" json:"shortDescription,omitempty"`
 	LongDescription  *string                                 `json:"longDescription,omitempty"`
