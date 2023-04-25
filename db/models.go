@@ -48,7 +48,7 @@ func (u *User) IsPasswordMatch(plainPassword string) bool {
 
 type Label struct {
 	ID   uint   `gorm:"primarykey" json:"-"`
-	Name string `gorm:"uniqueIndex;not null;type:varchar(60)" json:"name"`
+	Name string `gorm:"uniqueIndex;not null;type:varchar(60);<-:create" json:"name"`
 }
 
 type Recipe struct {

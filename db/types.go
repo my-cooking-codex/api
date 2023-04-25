@@ -32,7 +32,7 @@ type RecipeInfo struct {
 }
 
 type CreateUser struct {
-	Username string `json:"username" validate:"required,alphanum"`
+	Username string `json:"username" validate:"required,alphanum,min=3,max=30"`
 	Password string `json:"password" validate:"required"`
 }
 
@@ -47,13 +47,13 @@ func (u *CreateUser) IntoUser() User {
 type CreateRecipeInfo RecipeInfo
 
 type CreateRecipe struct {
-	Title            string             `json:"title" validate:"required"`
+	Title            string             `json:"title" validate:"required,min=1,max=60"`
 	Info             CreateRecipeInfo   `json:"info,omitempty"`
-	ShortDescription *string            `json:"shortDescription,omitempty"`
+	ShortDescription *string            `json:"shortDescription,omitempty" validate:"max=256"`
 	LongDescription  *string            `json:"longDescription,omitempty"`
 	Ingredients      []RecipeIngredient `json:"ingredients,omitempty"`
 	Steps            []RecipeStep       `json:"steps,omitempty"`
-	Labels           []string           `json:"labels,omitempty"`
+	Labels           []string           `json:"labels,omitempty" validate:"dive,min=1,max=60"`
 }
 
 func (r *CreateRecipe) IntoRecipe(ownerID uuid.UUID, imageID *uuid.UUID) Recipe {
@@ -96,14 +96,14 @@ type UpdateStep struct {
 type UpdateRecipeInfo RecipeInfo
 
 type UpdateRecipe struct {
-	Title            string              `json:"title,omitempty"`
+	Title            string              `json:"title,omitempty" validate:"min=1,max=60"`
 	Info             UpdateRecipeInfo    `json:"info,omitempty"`
-	ShortDescription *string             `json:"shortDescription,omitempty"`
+	ShortDescription *string             `json:"shortDescription,omitempty" validate:"max=256"`
 	LongDescription  *string             `json:"longDescription,omitempty"`
 	Ingredients      *[]UpdateIngredient `json:"ingredients,omitempty"`
 	Steps            *[]UpdateStep       `json:"steps,omitempty"`
 	ImageID          *uuid.UUID          `json:"-"`
-	Labels           *[]string           `json:"labels,omitempty"`
+	Labels           *[]string           `json:"labels,omitempty" validate:"dive,min=1,max=60"`
 }
 
 func (r *UpdateRecipe) IntoRecipe() Recipe {
