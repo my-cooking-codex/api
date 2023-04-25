@@ -46,15 +46,6 @@ func (u *User) IsPasswordMatch(plainPassword string) bool {
 	return false
 }
 
-type RecipeInfo struct {
-	Yields        *datatypes.JSONType[RecipeInfoYields] `gorm:"type:json" json:"yields,omitempty"`
-	CookTime      uint                                  `gorm:"not null;default:0" json:"cookTime,omitempty"`
-	PrepTime      uint                                  `gorm:"not null;default:0" json:"prepTime,omitempty"`
-	Freezable     bool                                  `gorm:"not null;default:false" json:"freezable"`
-	MicrowaveOnly bool                                  `gorm:"not null;default:false" json:"microwaveOnly"`
-	Source        *string                               `json:"source,omitempty"`
-}
-
 type Recipe struct {
 	UUIDBase
 	TimeBase
