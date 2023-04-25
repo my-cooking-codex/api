@@ -37,11 +37,12 @@ func GetUserCount() (int64, error) {
 	return count, nil
 }
 
-func CreateRecipe(recipe db.Recipe) (db.Recipe, error) {
-	if err := db.DB.Create(&recipe).Error; err != nil {
+func CreateRecipe(recipe db.CreateRecipe, userID uuid.UUID) (db.Recipe, error) {
+	var newRecipe = recipe.IntoRecipe(userID, nil)
+	if err := db.DB.Create(&newRecipe).Error; err != nil {
 		return db.Recipe{}, err
 	}
-	return recipe, nil
+	return newRecipe, nil
 }
 
 func GetRecipesByUserID(userID uuid.UUID, offset uint, limit uint) ([]db.Recipe, error) {

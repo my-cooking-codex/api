@@ -23,7 +23,7 @@ func postCreateRecipe(ctx echo.Context) error {
 		return err
 	}
 
-	recipe, err := crud.CreateRecipe(recipeData.IntoRecipe(authenticatedUser.UserID, nil))
+	recipe, err := crud.CreateRecipe(recipeData, authenticatedUser.UserID)
 	if err != nil {
 		return err
 	}
