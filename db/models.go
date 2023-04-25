@@ -46,6 +46,11 @@ func (u *User) IsPasswordMatch(plainPassword string) bool {
 	return false
 }
 
+type Label struct {
+	ID   uint   `gorm:"primarykey" json:"-"`
+	Name string `gorm:"uniqueIndex;not null;type:varchar(60)" json:"name"`
+}
+
 type Recipe struct {
 	UUIDBase
 	TimeBase
@@ -57,4 +62,37 @@ type Recipe struct {
 	Ingredients      *datatypes.JSONType[[]RecipeIngredient] `gorm:"type:json" json:"ingredients,omitempty"`
 	Steps            *datatypes.JSONType[[]RecipeStep]       `gorm:"type:json" json:"steps,omitempty"`
 	ImageID          *uuid.UUID                              `gorm:"type:uuid" json:"imageId"`
+	Labels           []Label                                 `gorm:"many2many:recipe_labels" json:"-"`
+}
+
+func (r *Recipe) IntoReadRecipe() ReadRecipe {
+	return ReadRecipe{
+		UUIDBase:         r.UUIDBase,
+		TimeBase:         r.TimeBase,
+		OwnerID:          r.OwnerID,
+		Title:            r.Title,
+		Info:             r.Info,
+		ShortDescription: r.ShortDescription,
+		LongDescription:  r.LongDescription,
+		Ingredients: func() *[]RecipeIngredient {
+			if r.Ingredients == nil {
+				return nil
+			}
+			return &r.Ingredients.Data
+		}(),
+		Steps: func() *[]RecipeStep {
+			if r.Steps == nil {
+				return nil
+			}
+			return &r.Steps.Data
+		}(),
+		ImageID: r.ImageID,
+		Labels: func() []string {
+			labels := make([]string, len(r.Labels))
+			for i, label := range r.Labels {
+				labels[i] = label.Name
+			}
+			return labels
+		}(),
+	}
 }

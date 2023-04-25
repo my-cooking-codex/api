@@ -53,6 +53,7 @@ type CreateRecipe struct {
 	LongDescription  *string            `json:"longDescription,omitempty"`
 	Ingredients      []RecipeIngredient `json:"ingredients,omitempty"`
 	Steps            []RecipeStep       `json:"steps,omitempty"`
+	Labels           []string           `json:"labels,omitempty"`
 }
 
 func (r *CreateRecipe) IntoRecipe(ownerID uuid.UUID, imageID *uuid.UUID) Recipe {
@@ -64,6 +65,20 @@ func (r *CreateRecipe) IntoRecipe(ownerID uuid.UUID, imageID *uuid.UUID) Recipe 
 		LongDescription:  r.LongDescription,
 		ImageID:          imageID,
 	}
+}
+
+type ReadRecipe struct {
+	UUIDBase
+	TimeBase
+	OwnerID          uuid.UUID           `json:"ownerId"`
+	Title            string              `json:"title"`
+	Info             RecipeInfo          `json:"info"`
+	ShortDescription *string             `json:"shortDescription,omitempty"`
+	LongDescription  *string             `json:"longDescription,omitempty"`
+	Ingredients      *[]RecipeIngredient `json:"ingredients,omitempty"`
+	Steps            *[]RecipeStep       `json:"steps,omitempty"`
+	ImageID          *uuid.UUID          `json:"imageId"`
+	Labels           []string            `json:"labels"`
 }
 
 type UpdateIngredient struct {
@@ -88,6 +103,7 @@ type UpdateRecipe struct {
 	Ingredients      *[]UpdateIngredient `json:"ingredients,omitempty"`
 	Steps            *[]UpdateStep       `json:"steps,omitempty"`
 	ImageID          *uuid.UUID          `json:"-"`
+	Labels           *[]string           `json:"labels,omitempty"`
 }
 
 func (r *UpdateRecipe) IntoRecipe() Recipe {

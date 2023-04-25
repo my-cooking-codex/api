@@ -3,6 +3,7 @@ package crud
 import (
 	"github.com/google/uuid"
 	"github.com/my-cooking-codex/api/db"
+	"gorm.io/gorm"
 )
 
 func CreateUser(user db.CreateUser) (db.User, error) {
@@ -37,20 +38,34 @@ func GetUserCount() (int64, error) {
 	return count, nil
 }
 
-func CreateRecipe(recipe db.CreateRecipe, userID uuid.UUID) (db.Recipe, error) {
+func CreateRecipe(recipe db.CreateRecipe, userID uuid.UUID) (db.ReadRecipe, error) {
 	var newRecipe = recipe.IntoRecipe(userID, nil)
-	if err := db.DB.Create(&newRecipe).Error; err != nil {
-		return db.Recipe{}, err
-	}
-	return newRecipe, nil
+	labels := make([]db.Label, len(recipe.Labels))
+
+	err := db.DB.Transaction(func(tx *gorm.DB) error {
+		for i, label := range recipe.Labels {
+			labels[i] = db.Label{Name: label}
+			if err := db.DB.FirstOrCreate(&labels[i], "name = ?", label).Select("id").Error; err != nil {
+				return err
+			}
+		}
+
+		return db.DB.Create(&newRecipe).Association("Labels").Append(labels)
+	})
+
+	return newRecipe.IntoReadRecipe(), err
 }
 
-func GetRecipesByUserID(userID uuid.UUID, offset uint, limit uint) ([]db.Recipe, error) {
+func GetRecipesByUserID(userID uuid.UUID, offset uint, limit uint) ([]db.ReadRecipe, error) {
 	var recipes []db.Recipe
-	if err := db.DB.Offset(int(offset)).Limit(int(limit)).Order("created_at DESC").Find(&recipes, "owner_id = ?", userID).Error; err != nil {
+	if err := db.DB.Preload("Labels").Offset(int(offset)).Limit(int(limit)).Order("created_at DESC").Find(&recipes, "owner_id = ?", userID).Error; err != nil {
 		return nil, err
 	}
-	return recipes, nil
+	readRecipes := make([]db.ReadRecipe, len(recipes))
+	for i, recipe := range recipes {
+		readRecipes[i] = recipe.IntoReadRecipe()
+	}
+	return readRecipes, nil
 }
 
 func GetRecipesByUserIDCount(userID uuid.UUID) (int64, error) {
@@ -61,12 +76,12 @@ func GetRecipesByUserIDCount(userID uuid.UUID) (int64, error) {
 	return count, nil
 }
 
-func GetRecipeById(id uuid.UUID) (db.Recipe, error) {
+func GetRecipeById(id uuid.UUID) (db.ReadRecipe, error) {
 	var recipe db.Recipe
-	if err := db.DB.First(&recipe, "id = ?", id).Error; err != nil {
-		return db.Recipe{}, err
+	if err := db.DB.Preload("Labels").First(&recipe, "id = ?", id).Error; err != nil {
+		return db.ReadRecipe{}, err
 	}
-	return recipe, nil
+	return recipe.IntoReadRecipe(), nil
 }
 
 func DoesUserOwnRecipe(userID uuid.UUID, recipeId uuid.UUID) (bool, error) {
@@ -78,13 +93,33 @@ func DoesUserOwnRecipe(userID uuid.UUID, recipeId uuid.UUID) (bool, error) {
 	return true, nil
 }
 
-func UpdateRecipe(recipeID uuid.UUID, recipe db.UpdateRecipe) (db.Recipe, error) {
+func UpdateRecipe(recipeID uuid.UUID, recipe db.UpdateRecipe) (db.ReadRecipe, error) {
 	var updatedRecipe db.Recipe
 
-	if err := db.DB.Model(&updatedRecipe).Where("id = ?", recipeID).Updates(recipe.IntoRecipe()).Error; err != nil {
-		return db.Recipe{}, err
-	}
-	return updatedRecipe, nil
+	err := db.DB.Transaction(func(tx *gorm.DB) error {
+		if err := db.DB.Model(&updatedRecipe).Where("id = ?", recipeID).Updates(recipe.IntoRecipe()).Error; err != nil {
+			return err
+		}
+
+		if recipe.Labels != nil {
+			labels := make([]db.Label, len(*recipe.Labels))
+			for i, label := range *recipe.Labels {
+				labels[i] = db.Label{Name: label}
+				if err := db.DB.FirstOrCreate(&labels[i], "name = ?", label).Select("id").Error; err != nil {
+					return err
+				}
+			}
+			var foundRecipe db.Recipe
+			if err := db.DB.First(&foundRecipe, recipeID).Select("id").Error; err != nil {
+				return err
+			}
+			return db.DB.Model(&foundRecipe).Association("Labels").Replace(&labels)
+		}
+
+		return nil
+	})
+
+	return updatedRecipe.IntoReadRecipe(), err
 }
 
 func UpdateRecipeImage(recipeID uuid.UUID, imageID *uuid.UUID) error {
