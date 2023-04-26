@@ -50,6 +50,7 @@ func InitRoutes(e *echo.Echo, appConfig config.AppConfig) {
 	apiRoutes := e.Group("/api/", jwtMiddleware, authenticatedUserMiddleware)
 	{
 		apiRoutes.GET("users/me/", getUserMe)
+		apiRoutes.GET("labels/", getLabels)
 		apiRoutes.POST("recipes/", postCreateRecipe)
 		apiRoutes.GET("recipes/", getRecipes)
 		apiRoutes.GET("recipes/:id/", getRecipe)

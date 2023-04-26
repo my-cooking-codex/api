@@ -38,6 +38,19 @@ func GetUserCount() (int64, error) {
 	return count, nil
 }
 
+func GetLabelNamesByUser(userID uuid.UUID) ([]string, error) {
+	var labels []string
+	if err := db.DB.Model(&db.Recipe{}).
+		Distinct("labels.name").
+		Joins("JOIN recipe_labels ON recipes.id = recipe_labels.recipe_id").
+		Joins("JOIN labels ON recipe_labels.label_id = labels.id").
+		Where("recipes.owner_id = ?", userID).
+		Pluck("name", &labels).Error; err != nil {
+		return nil, err
+	}
+	return labels, nil
+}
+
 func CreateRecipe(recipe db.CreateRecipe, userID uuid.UUID) (db.ReadRecipe, error) {
 	var newRecipe = recipe.IntoRecipe(userID, nil)
 	labels := make([]db.Label, len(recipe.Labels))
