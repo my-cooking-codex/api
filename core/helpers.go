@@ -11,3 +11,10 @@ func BindAndValidate(ctx echo.Context, i interface{}) error {
 	}
 	return nil
 }
+
+func ValueOrDefault[V comparable](value *V, def V) V {
+	if value == nil {
+		return def
+	}
+	return *value
+}

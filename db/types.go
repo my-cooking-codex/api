@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/google/uuid"
+	"github.com/my-cooking-codex/api/core"
 	"gorm.io/datatypes"
 )
 
@@ -49,7 +50,7 @@ type CreateRecipeInfo RecipeInfo
 type CreateRecipe struct {
 	Title            string             `json:"title" validate:"required,min=1,max=60"`
 	Info             CreateRecipeInfo   `json:"info,omitempty"`
-	ShortDescription *string            `json:"shortDescription,omitempty" validate:"max=256"`
+	ShortDescription *string            `json:"shortDescription,omitempty" validate:"omitempty,max=256"`
 	LongDescription  *string            `json:"longDescription,omitempty"`
 	Ingredients      []RecipeIngredient `json:"ingredients,omitempty"`
 	Steps            []RecipeStep       `json:"steps,omitempty"`
@@ -96,19 +97,19 @@ type UpdateStep struct {
 type UpdateRecipeInfo RecipeInfo
 
 type UpdateRecipe struct {
-	Title            string              `json:"title,omitempty" validate:"min=1,max=60"`
+	Title            *string             `json:"title,omitempty" validate:"omitempty,min=1,max=60"`
 	Info             UpdateRecipeInfo    `json:"info,omitempty"`
-	ShortDescription *string             `json:"shortDescription,omitempty" validate:"max=256"`
+	ShortDescription *string             `json:"shortDescription,omitempty" validate:"omitempty,max=256"`
 	LongDescription  *string             `json:"longDescription,omitempty"`
 	Ingredients      *[]UpdateIngredient `json:"ingredients,omitempty"`
 	Steps            *[]UpdateStep       `json:"steps,omitempty"`
 	ImageID          *uuid.UUID          `json:"-"`
-	Labels           *[]string           `json:"labels,omitempty" validate:"dive,min=1,max=60"`
+	Labels           *[]string           `json:"labels,omitempty" validate:"omitempty,dive,min=1,max=60"`
 }
 
 func (r *UpdateRecipe) IntoRecipe() Recipe {
 	return Recipe{
-		Title:            r.Title,
+		Title:            core.ValueOrDefault(r.Title, ""),
 		Info:             RecipeInfo(r.Info),
 		ShortDescription: r.ShortDescription,
 		LongDescription:  r.LongDescription,
