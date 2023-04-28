@@ -45,6 +45,12 @@ func getRecipes(ctx echo.Context) error {
 		authenticatedUser.UserID,
 		rowOffset,
 		filterParams.PerPage,
+		crud.RecipesFilterParams{
+			Title:         filterParams.Title,
+			Labels:        filterParams.Labels,
+			Freezable:     filterParams.Freezable,
+			MicrowaveOnly: filterParams.MicrowaveOnly,
+		},
 	)
 	if err != nil {
 		return err

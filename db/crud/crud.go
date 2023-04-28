@@ -1,6 +1,8 @@
 package crud
 
 import (
+	"strings"
+
 	"github.com/google/uuid"
 	"github.com/my-cooking-codex/api/db"
 	"gorm.io/gorm"
@@ -69,15 +71,56 @@ func CreateRecipe(recipe db.CreateRecipe, userID uuid.UUID) (db.ReadRecipe, erro
 	return newRecipe.IntoReadRecipe(), err
 }
 
-func GetRecipesByUserID(userID uuid.UUID, offset uint, limit uint) ([]db.ReadRecipe, error) {
+type RecipesFilterParams struct {
+	Title         *string
+	Labels        []string
+	Freezable     *bool
+	MicrowaveOnly *bool
+}
+
+func GetRecipesByUserID(userID uuid.UUID, offset uint, limit uint, filters RecipesFilterParams) ([]db.ReadRecipe, error) {
 	var recipes []db.Recipe
-	if err := db.DB.Preload("Labels").Offset(int(offset)).Limit(int(limit)).Order("created_at DESC").Find(&recipes, "owner_id = ?", userID).Error; err != nil {
+
+	// build base query
+	query := db.DB.Preload("Labels").
+		Offset(int(offset)).
+		Limit(int(limit)).
+		Order("created_at DESC").
+		Where("owner_id = ?", userID)
+
+	// add title filter if present
+	if filters.Title != nil {
+		titleFilter := strings.TrimSpace(*filters.Title)
+		if titleFilter != "" {
+			query = query.Where("title LIKE ?", "%"+titleFilter+"%")
+		}
+	}
+
+	// add labels filter if present
+	if len(filters.Labels) > 0 {
+		query = query.Joins("JOIN recipe_labels ON recipes.id = recipe_labels.recipe_id").
+			Joins("JOIN labels ON recipe_labels.label_id = labels.id").
+			Where("labels.name IN ?", filters.Labels)
+	}
+
+	// add freezable filter if present
+	if filters.Freezable != nil {
+		query = query.Where("info_freezable = ?", *filters.Freezable)
+	}
+
+	// add microwave-only filter if present
+	if filters.MicrowaveOnly != nil {
+		query = query.Where("info_microwave_only = ?", *filters.MicrowaveOnly)
+	}
+
+	if err := query.Find(&recipes).Error; err != nil {
 		return nil, err
 	}
 	readRecipes := make([]db.ReadRecipe, len(recipes))
 	for i, recipe := range recipes {
 		readRecipes[i] = recipe.IntoReadRecipe()
 	}
+
 	return readRecipes, nil
 }
 
