@@ -10,6 +10,7 @@ import (
 type accountStats struct {
 	UserCount   int64 `json:"userCount"`
 	RecipeCount int64 `json:"recipeCount"`
+	LabelCount  int64 `json:"labelCount"`
 }
 
 func getAccountStats(ctx echo.Context) error {
@@ -23,8 +24,13 @@ func getAccountStats(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
+	labelCount, err := crud.GetLabelCountByUser(authenticatedUser.UserID)
+	if err != nil {
+		return err
+	}
 	return ctx.JSON(http.StatusOK, accountStats{
 		UserCount:   userCount,
 		RecipeCount: recipeCount,
+		LabelCount:  labelCount,
 	})
 }
