@@ -112,7 +112,9 @@ func GetRecipesByUserID(userID uuid.UUID, offset uint, limit uint, filters Recip
 	if len(filters.Labels) > 0 {
 		query = query.Joins("JOIN recipe_labels ON recipes.id = recipe_labels.recipe_id").
 			Joins("JOIN labels ON recipe_labels.label_id = labels.id").
-			Where("labels.name IN ?", filters.Labels)
+			Where("labels.name IN ?", filters.Labels).
+			Group("recipes.id").
+			Having("COUNT(DISTINCT labels.name) = ?", len(filters.Labels))
 	}
 
 	// add freezable filter if present
