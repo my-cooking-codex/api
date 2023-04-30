@@ -46,7 +46,7 @@ type RecipesFilterParams struct {
 	Page          uint     `query:"page" validate:"required,gt=0"`
 	PerPage       uint     `query:"perPage" validate:"required,gt=0,lte=120"`
 	Title         *string  `query:"title"`
-	Labels        []string `query:"labels"`
+	Labels        []string `query:"label"`
 	Freezable     *bool    `query:"freezable"`
 	MicrowaveOnly *bool    `query:"microwaveOnly"`
 }
