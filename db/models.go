@@ -78,13 +78,15 @@ func (r *Recipe) IntoReadRecipe() ReadRecipe {
 			if r.Ingredients == nil {
 				return nil
 			}
-			return &r.Ingredients.Data
+			i := r.Ingredients.Data()
+			return &i
 		}(),
 		Steps: func() *[]RecipeStep {
 			if r.Steps == nil {
 				return nil
 			}
-			return &r.Steps.Data
+			s := r.Steps.Data()
+			return &s
 		}(),
 		ImageID: r.ImageID,
 		Labels: func() []string {

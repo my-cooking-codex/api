@@ -121,7 +121,8 @@ func (r *UpdateRecipe) IntoRecipe() Recipe {
 			for i, ingredient := range *r.Ingredients {
 				ingredients[i] = RecipeIngredient(ingredient)
 			}
-			return &datatypes.JSONType[[]RecipeIngredient]{Data: ingredients}
+			v := datatypes.NewJSONType(ingredients)
+			return &v
 		}(),
 		Steps: func() *datatypes.JSONType[[]RecipeStep] {
 			if r.Steps == nil {
@@ -131,7 +132,8 @@ func (r *UpdateRecipe) IntoRecipe() Recipe {
 			for i, step := range *r.Steps {
 				steps[i] = RecipeStep(step)
 			}
-			return &datatypes.JSONType[[]RecipeStep]{Data: steps}
+			v := datatypes.NewJSONType(steps)
+			return &v
 		}(),
 		ImageID: r.ImageID,
 	}
