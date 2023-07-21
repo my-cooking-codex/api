@@ -62,10 +62,13 @@ func getRecipe(ctx echo.Context) error {
 	recipeID := ctx.Param("id")
 	authenticatedUser := getAuthenticatedUser(ctx)
 
-	if hasAccess, err := crud.DoesUserOwnRecipe(authenticatedUser.UserID, uuid.MustParse(recipeID)); err != nil {
+	if isOwner, err := crud.DoesUserOwnRecipe(
+		authenticatedUser.UserID,
+		uuid.MustParse(recipeID),
+	); err != nil {
 		return err
-	} else if !hasAccess {
-		return ctx.NoContent(http.StatusForbidden)
+	} else if !isOwner {
+		return ctx.NoContent(http.StatusNotFound)
 	}
 
 	recipe, err := crud.GetRecipeById(uuid.MustParse(recipeID))
@@ -79,12 +82,13 @@ func patchRecipe(ctx echo.Context) error {
 	recipeID := ctx.Param("id")
 	authenticatedUser := getAuthenticatedUser(ctx)
 
-	// validate whether user can modify the recipe content
-	isOwner, err := crud.DoesUserOwnRecipe(authenticatedUser.UserID, uuid.MustParse(recipeID))
-	if err != nil {
+	if isOwner, err := crud.DoesUserOwnRecipe(
+		authenticatedUser.UserID,
+		uuid.MustParse(recipeID),
+	); err != nil {
 		return err
 	} else if !isOwner {
-		return ctx.NoContent(http.StatusForbidden)
+		return ctx.NoContent(http.StatusNotFound)
 	}
 
 	var recipeData db.UpdateRecipe
@@ -104,12 +108,13 @@ func deleteRecipe(ctx echo.Context) error {
 	recipeID := ctx.Param("id")
 	authenticatedUser := getAuthenticatedUser(ctx)
 
-	// validate whether user can modify the recipe content
-	isOwner, err := crud.DoesUserOwnRecipe(authenticatedUser.UserID, uuid.MustParse(recipeID))
-	if err != nil {
+	if isOwner, err := crud.DoesUserOwnRecipe(
+		authenticatedUser.UserID,
+		uuid.MustParse(recipeID),
+	); err != nil {
 		return err
 	} else if !isOwner {
-		return ctx.NoContent(http.StatusForbidden)
+		return ctx.NoContent(http.StatusNotFound)
 	}
 
 	recipe, err := crud.GetRecipeById(uuid.MustParse(recipeID))
@@ -134,12 +139,13 @@ func postSetRecipeImage(ctx echo.Context) error {
 	recipeID := ctx.Param("id")
 	authenticatedUser := getAuthenticatedUser(ctx)
 
-	// validate whether user can modify the recipe content
-	isOwner, err := crud.DoesUserOwnRecipe(authenticatedUser.UserID, uuid.MustParse(recipeID))
-	if err != nil {
+	if isOwner, err := crud.DoesUserOwnRecipe(
+		authenticatedUser.UserID,
+		uuid.MustParse(recipeID),
+	); err != nil {
 		return err
 	} else if !isOwner {
-		return ctx.NoContent(http.StatusForbidden)
+		return ctx.NoContent(http.StatusNotFound)
 	}
 
 	recipe, err := crud.GetRecipeById(uuid.MustParse(recipeID))
@@ -187,12 +193,13 @@ func deleteRecipeImage(ctx echo.Context) error {
 	recipeID := ctx.Param("id")
 	authenticatedUser := getAuthenticatedUser(ctx)
 
-	// validate whether user can modify the recipe content
-	isOwner, err := crud.DoesUserOwnRecipe(authenticatedUser.UserID, uuid.MustParse(recipeID))
-	if err != nil {
+	if isOwner, err := crud.DoesUserOwnRecipe(
+		authenticatedUser.UserID,
+		uuid.MustParse(recipeID),
+	); err != nil {
 		return err
 	} else if !isOwner {
-		return ctx.NoContent(http.StatusForbidden)
+		return ctx.NoContent(http.StatusNotFound)
 	}
 
 	recipe, err := crud.GetRecipeById(uuid.MustParse(recipeID))

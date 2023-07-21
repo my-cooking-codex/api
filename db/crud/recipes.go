@@ -98,12 +98,9 @@ func GetRecipeById(id uuid.UUID) (db.ReadRecipe, error) {
 }
 
 func DoesUserOwnRecipe(userID uuid.UUID, recipeId uuid.UUID) (bool, error) {
-	var recipe db.Recipe
-
-	if err := db.DB.Where("id = ?", recipeId).Where("owner_id = ?", userID).First(&recipe).Error; err != nil {
-		return false, err
-	}
-	return true, nil
+	var count int64
+	err := db.DB.Model(&db.Recipe{}).Where("id = ?", recipeId).Count(&count).Error
+	return count > 0, err
 }
 
 func UpdateRecipe(recipeID uuid.UUID, recipe db.UpdateRecipe) (db.ReadRecipe, error) {
