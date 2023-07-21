@@ -8,63 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateUser(user db.CreateUser) (db.User, error) {
-	var newUser = user.IntoUser()
-	if err := db.DB.Create(&newUser).Error; err != nil {
-		return db.User{}, err
-	}
-	return newUser, nil
-}
-
-func GetUserById(userID uuid.UUID) (db.User, error) {
-	var user db.User
-	if err := db.DB.First(&user, "id = ?", userID).Error; err != nil {
-		return db.User{}, err
-	}
-	return user, nil
-}
-
-func GetUserByUsername(username string) (db.User, error) {
-	var user db.User
-	if err := db.DB.First(&user, "username = ?", username).Error; err != nil {
-		return db.User{}, err
-	}
-	return user, nil
-}
-
-func GetUserCount() (int64, error) {
-	var count int64
-	if err := db.DB.Model(&db.User{}).Count(&count).Error; err != nil {
-		return 0, err
-	}
-	return count, nil
-}
-
-func GetLabelNamesByUser(userID uuid.UUID) ([]string, error) {
-	var labels []string
-	if err := db.DB.Model(&db.Recipe{}).
-		Distinct("labels.name").
-		Joins("JOIN recipe_labels ON recipes.id = recipe_labels.recipe_id").
-		Joins("JOIN labels ON recipe_labels.label_id = labels.id").
-		Where("recipes.owner_id = ?", userID).
-		Pluck("name", &labels).Error; err != nil {
-		return nil, err
-	}
-	return labels, nil
-}
-
-func GetLabelCountByUser(userID uuid.UUID) (int64, error) {
-	var count int64
-	if err := db.DB.Model(&db.Recipe{}).
-		Distinct("recipe_labels.label_id").
-		Joins("JOIN recipe_labels ON recipes.id = recipe_labels.recipe_id").
-		Where("recipes.owner_id = ?", userID).
-		Count(&count).Error; err != nil {
-		return 0, err
-	}
-	return count, nil
-}
-
 func CreateRecipe(recipe db.CreateRecipe, userID uuid.UUID) (db.ReadRecipe, error) {
 	var newRecipe = recipe.IntoRecipe(userID, nil)
 	labels := make([]db.Label, len(recipe.Labels))
