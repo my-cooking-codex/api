@@ -15,12 +15,12 @@ func CreateRecipe(recipe db.CreateRecipe, userID uuid.UUID) (db.ReadRecipe, erro
 	err := db.DB.Transaction(func(tx *gorm.DB) error {
 		for i, label := range recipe.Labels {
 			labels[i] = db.Label{Name: label}
-			if err := db.DB.FirstOrCreate(&labels[i], "name = ?", label).Select("id").Error; err != nil {
+			if err := tx.FirstOrCreate(&labels[i], "name = ?", label).Select("id").Error; err != nil {
 				return err
 			}
 		}
 
-		return db.DB.Create(&newRecipe).Association("Labels").Append(labels)
+		return tx.Create(&newRecipe).Association("Labels").Append(labels)
 	})
 
 	return newRecipe.IntoReadRecipe(), err
@@ -107,7 +107,7 @@ func UpdateRecipe(recipeID uuid.UUID, recipe db.UpdateRecipe) (db.ReadRecipe, er
 	var updatedRecipe db.Recipe
 
 	err := db.DB.Transaction(func(tx *gorm.DB) error {
-		if err := db.DB.Model(&updatedRecipe).Where("id = ?", recipeID).Updates(recipe.IntoRecipe()).Error; err != nil {
+		if err := tx.Model(&updatedRecipe).Where("id = ?", recipeID).Updates(recipe.IntoRecipe()).Error; err != nil {
 			return err
 		}
 
@@ -115,15 +115,15 @@ func UpdateRecipe(recipeID uuid.UUID, recipe db.UpdateRecipe) (db.ReadRecipe, er
 			labels := make([]db.Label, len(*recipe.Labels))
 			for i, label := range *recipe.Labels {
 				labels[i] = db.Label{Name: label}
-				if err := db.DB.FirstOrCreate(&labels[i], "name = ?", label).Select("id").Error; err != nil {
+				if err := tx.FirstOrCreate(&labels[i], "name = ?", label).Select("id").Error; err != nil {
 					return err
 				}
 			}
 			var foundRecipe db.Recipe
-			if err := db.DB.First(&foundRecipe, recipeID).Select("id").Error; err != nil {
+			if err := tx.First(&foundRecipe, recipeID).Select("id").Error; err != nil {
 				return err
 			}
-			return db.DB.Model(&foundRecipe).Association("Labels").Replace(&labels)
+			return tx.Model(&foundRecipe).Association("Labels").Replace(&labels)
 		}
 
 		return nil
