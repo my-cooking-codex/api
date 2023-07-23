@@ -44,6 +44,9 @@ func InitDB(conf config.DBConfig) error {
 
 	return DB.AutoMigrate(
 		&User{},
+		&Label{},
 		&Recipe{},
+		&PantryLocation{},
+		&PantryItem{},
 	)
 }

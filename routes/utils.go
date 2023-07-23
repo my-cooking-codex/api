@@ -58,6 +58,16 @@ func InitRoutes(e *echo.Echo, appConfig config.AppConfig) {
 		apiRoutes.DELETE("recipes/:id/", deleteRecipe)
 		apiRoutes.POST("recipes/:id/image/", postSetRecipeImage, middleware.BodyLimit(appConfig.ImageUploadSizeLimit))
 		apiRoutes.DELETE("recipes/:id/image/", deleteRecipeImage)
+		apiRoutes.GET("pantry/", getPantryLocations)
+		apiRoutes.POST("pantry/", postCreatePantryLocation)
+		apiRoutes.GET("pantry/:id/", getPantryLocationByID)
+		apiRoutes.PATCH("pantry/:id/", patchPantryLocationByID)
+		apiRoutes.DELETE("pantry/:id/", deletePantryLocationByID)
+		apiRoutes.POST("pantry/:id/items/", postCreatePantryItem)
+		apiRoutes.GET("pantry-items/", getPantryItems)
+		apiRoutes.GET("pantry-items/:id/", getPantryItemByID)
+		apiRoutes.PATCH("pantry-items/:id/", patchPantryItemByID)
+		apiRoutes.DELETE("pantry-items/:id/", deletePantryItemByID)
 		apiRoutes.GET("stats/me/", getAccountStats)
 	}
 

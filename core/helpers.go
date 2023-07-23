@@ -18,3 +18,13 @@ func ValueOrDefault[V comparable](value *V, def V) V {
 	}
 	return *value
 }
+
+func PopElement[T comparable](toPop T, items []T) []T {
+	var newItems = make([]T, 0, len(items))
+	for _, item := range items {
+		if item != toPop {
+			newItems = append(newItems, item)
+		}
+	}
+	return newItems
+}

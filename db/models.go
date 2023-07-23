@@ -26,9 +26,10 @@ func (base *UUIDBase) BeforeCreate(tx *gorm.DB) (err error) {
 type User struct {
 	UUIDBase
 	TimeBase
-	Username       string   `gorm:"uniqueIndex;not null;type:varchar(30)" json:"username"`
-	HashedPassword []byte   `gorm:"not null" json:"-"`
-	Recipes        []Recipe `gorm:"foreignKey:OwnerID" json:"-"`
+	Username        string           `gorm:"uniqueIndex;not null;type:varchar(30)" json:"username"`
+	HashedPassword  []byte           `gorm:"not null" json:"-"`
+	Recipes         []Recipe         `gorm:"foreignKey:OwnerID" json:"-"`
+	PantryLocations []PantryLocation `gorm:"foreignKey:OwnerId" json:"-"`
 }
 
 func (u *User) SetPassword(newPlainPassword string) {
@@ -97,4 +98,24 @@ func (r *Recipe) IntoReadRecipe() ReadRecipe {
 			return labels
 		}(),
 	}
+}
+
+type PantryLocation struct {
+	UUIDBase
+	TimeBase
+	Name    string       `gorm:"not null;size:60" json:"name"`
+	OwnerId uuid.UUID    `gorm:"not null;type:uuid" json:"ownerId"`
+	Items   []PantryItem `gorm:"foreignKey:LocationId" json:"-"`
+}
+
+type PantryItem struct {
+	UUIDBase
+	TimeBase
+	Name       string         `gorm:"not null;size:60" json:"name"`
+	LocationId uuid.UUID      `gorm:"not null;type:uuid" json:"locationId"`
+	Quantity   uint           `gorm:"not null;default:1" json:"quantity"`
+	Notes      *string        `json:"notes,omitempty"`
+	Expiry     *time.Time     `json:"expiry,omitempty"`
+	Labels     []Label        `gorm:"many2many:pantry_item_labels" json:"-"`
+	Location   PantryLocation `json:"-"`
 }
