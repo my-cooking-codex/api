@@ -85,6 +85,11 @@ func CreatePantryItem(
 	return pantryItem, err
 }
 
+func GetPantryItemCountByUserID(userID uuid.UUID) (int64, error) {
+    var count int64
+    return count, db.DB.Model(&db.PantryItem{}).Count(&count).Error
+}
+
 func GetPantryItemByID(itemID uuid.UUID) (types.ReadPantryItem, error) {
 	var item db.PantryItem
 	err := db.DB.Preload("Labels").First(&item, "id = ?", itemID).Error
