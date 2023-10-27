@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/my-cooking-codex/api/db"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func CreateRecipe(recipe db.CreateRecipe, userID uuid.UUID) (db.ReadRecipe, error) {
@@ -141,8 +142,5 @@ func UpdateRecipeImage(recipeID uuid.UUID, imageID *uuid.UUID) error {
 }
 
 func DeleteRecipe(recipeID uuid.UUID) error {
-	if err := db.DB.Delete(&db.Recipe{}, recipeID).Error; err != nil {
-		return err
-	}
-	return nil
+	return db.DB.Select(clause.Associations).Delete(&db.Recipe{}, recipeID).Error
 }

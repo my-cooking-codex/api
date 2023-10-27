@@ -9,6 +9,7 @@ import (
 	"github.com/my-cooking-codex/api/db"
 	"github.com/my-cooking-codex/api/db/types"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func CreatePantryLocation(
@@ -86,8 +87,8 @@ func CreatePantryItem(
 }
 
 func GetPantryItemCountByUserID(userID uuid.UUID) (int64, error) {
-    var count int64
-    return count, db.DB.Model(&db.PantryItem{}).Count(&count).Error
+	var count int64
+	return count, db.DB.Model(&db.PantryItem{}).Count(&count).Error
 }
 
 func GetPantryItemByID(itemID uuid.UUID) (types.ReadPantryItem, error) {
@@ -236,5 +237,5 @@ func UpdatePantryItem(
 }
 
 func DeletePantryItem(itemID uuid.UUID) error {
-	return db.DB.Where("id = ?", itemID).Delete(&db.PantryItem{}).Error
+	return db.DB.Select(clause.Associations).Delete(&db.PantryItem{}, itemID).Error
 }
