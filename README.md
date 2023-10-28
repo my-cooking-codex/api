@@ -7,7 +7,7 @@
 | BIND__HOST               | Host to listen on                                   | 127.0.0.1 |
 | BIND__PORT               | Port to bind to                                     | 8000      |
 | DB__URI                  | Database URI                                        |           |
-| DB__TYPE                 | The type of database (sqlite, mysql, postgres)      |           |
+| DB__TYPE                 | The type of database (sqlite, postgres)             |           |
 | DATA__RECIPE_IMAGES_BASE | Where recipe images will be stored                  |           |
 | JWT_SECRET               | base64 encoded secret for JWT authentication tokens |           |
 | STATIC_PATH              | Serve static files at / (e.g. the frontend)         | -         |
@@ -21,16 +21,13 @@
 # sqlite
 ./data/db.sqlite
 
-# mysql
-user:pass@tcp(127.0.0.1:3306)/my_cooking_codex?charset=utf8mb4&parseTime=True&loc=Local
-
 # postgres
 host=localhost user=user password=password dbname=my_cooking_codex port=9920 sslmode=disable TimeZone=Europe/London
 ```
 
 ## Without Docker
 ### Requirements
-- Database (SQLite, MySQL, PostgreSQL)
+- Database (SQLite, PostgreSQL)
 - libvips installed
 - go >= 1.20
 
