@@ -9,7 +9,7 @@ require (
 	github.com/google/uuid v1.4.0
 	github.com/h2non/bimg v1.1.9
 	github.com/labstack/echo-jwt/v4 v4.2.0
-	github.com/labstack/echo/v4 v4.11.2
+	github.com/labstack/echo/v4 v4.11.3
 	golang.org/x/crypto v0.14.0
 	gorm.io/datatypes v1.2.0
 	gorm.io/driver/postgres v1.5.4
