@@ -47,7 +47,7 @@ func GetRecipesByUserID(userID uuid.UUID, offset uint, limit uint, filters Recip
 	if filters.Title != nil {
 		titleFilter := strings.TrimSpace(*filters.Title)
 		if titleFilter != "" {
-			query = query.Where("title LIKE ?", "%"+titleFilter+"%")
+			query = query.Where("lower(title) LIKE lower(?)", "%"+titleFilter+"%")
 		}
 	}
 

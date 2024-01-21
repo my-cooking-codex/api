@@ -135,7 +135,7 @@ func GetPantryItemsByUserID(
 		Where("pantry_locations.owner_id = ?", userID)
 
 	if name := strings.TrimSpace(filters.Name); name != "" {
-		query = query.Where("pantry_items.name LIKE ?", "%"+name+"%")
+		query = query.Where("lower(pantry_items.name) LIKE lower(?)", "%"+name+"%")
 	}
 
 	if len(filters.Labels) != 0 {
